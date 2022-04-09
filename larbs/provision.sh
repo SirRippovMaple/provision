@@ -4,7 +4,7 @@ set +x
 ### OPTIONS AND VARIABLES ###
 SCRIPT=$(readlink -f "$0")
 SCRIPT_PATH=$(dirname "$SCRIPT")
-source $SCRIPT_PATH/env
+source $SCRIPT_PATH/.env
 
 while getopts ":a:r:b:p:h" o; do case "${o}" in
 	h) printf "Optional arguments for custom use:\\n  -r: Dotfiles repository (local file or url)\\n  -p: Dependencies and programs csv (local file or url)\\n  -a: AUR helper (must have pacman-like syntax)\\n  -h: Show this message\\n" && exit 1 ;;
@@ -74,7 +74,7 @@ installaurhelper() { # Installs $1 manually. Used only for AUR helper here.
 }
 
 postInstall() {
-    [ -x "$SCRIPT_PATH/scripts/$1.sh" ] && "$SCRIPT_PATH/scripts/$1.sh" "$SCRIPT_PATH"
+    [ -x "$SCRIPT_PATH/scripts/$1.sh" ] && "$SCRIPT_PATH/scripts/$1.sh" "$SCRIPT_PATH" "$name"
 }
 
 enableServices() {
@@ -192,12 +192,13 @@ sudo -u "$name" mkdir -p "/home/$name/.cache/zsh/"
 
 # Install the dotfiles
 if [ ! -d /home/$name/.config/chezmoi ]; then
-    echo "source \"$SCRIPT_PATH/env\"" > /tmp/install_dotfiles.sh
+    echo "source \"$SCRIPT_PATH/.env\"" > /tmp/install_dotfiles.sh
     echo "bw login --apikey" >> /tmp/install_dotfiles.sh
     echo "export BW_SESSION=\"\`bw unlock --raw --passwordenv BW_PASSWORD\`\"" >> /tmp/install_dotfiles.sh
     echo "chezmoi init --apply \"https://github.com/$dotfilesrepo\"" >> /tmp/install_dotfiles.sh
     echo "cd ~/.local/share/chezmoi" >> /tmp/install_dotfiles.sh
     echo "git remote set-url origin git@github.com:$dotfilesrepo" >> /tmp/install_dotfiles.sh
+    echo "bw get item 509b05ef-c805-481f-a1e5-a8bf00949167 | jq -r .notes | gpg --import"
     chmod +x /tmp/install_dotfiles.sh
     sudo -u "$name" /tmp/install_dotfiles.sh
     rm /tmp/install_dotfiles.sh
