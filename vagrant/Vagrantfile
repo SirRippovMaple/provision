@@ -1,0 +1,31 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure("2") do |config|
+    config.vm.network "public_network"
+
+    # Pull official archlinux box
+    config.vm.box = "archlinux/archlinux"
+
+    # Enable synced folders to sync the playbook to the virtual machine using rsync
+    config.vm.synced_folder "../larbs", "/vagrant", type: "rsync", rsync__auto: "true"
+
+    # Configure the vagrant provisioner
+    config.vm.provision "shell" do |shell|
+        shell.inline = "/vagrant/provision.sh"
+    end
+
+    # Customize the vm configs
+    config.vm.provider "virtualbox" do |vb|
+        # Add an optical drive to install guest additions
+        vb.customize ["storageattach", :id,
+                      "--storagectl", "IDE Controller",
+                      "--port", "0", "--device", "1",
+                      "--type", "dvddrive",
+                      "--medium", "emptydrive"]
+        vb.customize ["modifyvm", :id, "--accelerate3d", "off"]
+        vb.customize ["modifyvm", :id, "--graphicscontroller", "vmsvga"]
+        # increase virtual video ram
+        vb.customize ["modifyvm", :id, "--vram", "128"]
+    end
+end

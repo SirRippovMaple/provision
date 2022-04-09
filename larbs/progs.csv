@@ -1,0 +1,92 @@
+# Base
+,base-devel
+,man-db
+,man-pages
+,pacman-contrib
+,fwupd
+,dmidecode
+,tmux
+,git
+,rsync
+,coreutils
+,moreutils
+,dateutils
+,bc
+,ranger
+,jq
+,fzf
+,bash
+,bash-completion
+,zsh
+,zsh-completions
+,sudo
+# X Server
+,xorg-server
+,xorg-xinit
+,xorg-xmodmap
+,xorg-xdpyinfo
+,xorg-xev
+,xorg-sessreg
+,xorg-xwininfo
+,xautomation
+,autocutsel
+,autorandr
+,unclutter
+,xdg-user-dirs
+,xclip
+# i3
+,i3-wm
+,i3blocks
+,i3lock
+,i3status
+,rofi
+# Clipboard
+A,rofi-greenclip
+# Audio
+,wireplumber
+,pipewire
+,pipewire-pulse
+,pulsemixer
+,pamixer
+# Bluetooth
+,bluez
+,bluez-libs
+,bluez-utils
+,blueman,bluetooth
+# Network
+,networkmanager,NetworkManager
+,network-manager-applet
+,xfce4-notifyd
+,gnome-keyring
+,nfs-utils,home-storage.mount
+# Bootup candy
+,lightdm
+,lightdm-gtk-greeter
+A,plymouth,lightdm-plymouth
+# Archivers
+,zip
+,unzip
+,p7zip
+,unrar
+# Pass
+,pass
+,pass-otp
+,rofi-pass
+A,pass-update
+A,pwgen-passphrase
+# Software
+A,brave-bin
+,kitty
+,bat
+,dotnet-sdk
+,neovim
+,docker,docker
+,feh
+,restic
+,gnupg,,dirmngr.socket gpg-agent-ssh.socket
+,go
+,hledger
+A,rider
+A,goland
+A,datagrip
+,exa
