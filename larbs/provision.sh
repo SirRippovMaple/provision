@@ -27,7 +27,7 @@ installpkg(){ pacman --noconfirm --needed -S "$1" >/dev/null 2>&1 ;}
 msg() { printf "%s\n" "$1" >&2; }
 error() { printf "%s\n" "$1" >&2; exit 1; }
 
-adduserandpass() { \
+adduserandpass() {
 	# Prompts user for new username an password.
 	name=trumpi
     pass1=temp-pass1
@@ -37,9 +37,10 @@ adduserandpass() { \
 	usermod -a -G wheel,docker "$name" && mkdir -p /home/"$name" && chown "$name":wheel /home/"$name"
 	export repodir="/home/$name/.local/src"; mkdir -p "$repodir"; chown -R "$name":wheel "$(dirname "$repodir")"
 	echo "$name:$pass1" | chpasswd
-	unset pass1 ;}
+	unset pass1 ;
+}
 
-refreshkeys() { \
+refreshkeys() {
 	case "$(readlink -f /sbin/init)" in
 		*systemd* )
 			msg "Refreshing Arch Keyring..."
@@ -56,7 +57,8 @@ Include = /etc/pacman.d/mirrorlist-arch" >> /etc/pacman.conf
 			pacman -Sy >/dev/null 2>&1
 			pacman-key --populate archlinux >/dev/null 2>&1
 			;;
-	esac ;}
+	esac ;
+}
 
 newperms() { # Set special sudoers settings for install (or after).
 	sed -i "/#LARBS/d" /etc/sudoers
@@ -78,16 +80,17 @@ postInstall() {
 }
 
 enableServices() {
-    [ ! -z "$1" ] && systemctl enable "$1" && systemctl start "$1"
-    [ ! -z "$2" ] && sudo -u "$name" systemctl enable --user $2
+    [ ! -z "$1" ] && msg "Enabling system services $1" && systemctl enable $1
+    [ ! -z "$2" ] && msg "Enabling user services $2" && systemctl enable --global $2
+    [ ! -z "$3" ] && msg "Enabling single user service $3" && systemctl enable ${3}@$name
 }
 
 maininstall() { # Installs all needed programs from main repo.
 	msg "Installing \`$1\` ($n of $total)."
 	installpkg "$1"
     postInstall "$1"
-    enableServices "$2" "$3"
-	}
+    enableServices "$2" "$3" "$4"
+}
 
 gitmakeinstall() {
 	progname="$(basename "$1" .git)"
@@ -97,37 +100,39 @@ gitmakeinstall() {
 	cd "$dir" || exit 1
 	make >/dev/null 2>&1
 	make install >/dev/null 2>&1
-	cd /tmp || return 1 ;}
+	cd /tmp || return 1 ;
+}
 
 aurinstall() {
 	msg "Installing \`$1\` ($n of $total) from the AUR."
 	echo "$aurinstalled" | grep -q "^$1$" && return 1
 	sudo -u "$name" $aurhelper -S --noconfirm "$1" >/dev/null 2>&1 || true
     postInstall "$1"
-    enableServices "$2" "$3"
-	}
+    enableServices "$2" "$3" "$4"
+}
 
-pipinstall() { \
+pipinstall() {
 	msg "Installing the Python package \`$1\` ($n of $total)."
 	[ -x "$(command -v "pip")" ] || installpkg python-pip >/dev/null 2>&1
 	yes | pip install "$1"
 }
 
-installationloop() { \
+installationloop() {
 	([ -f "$progsfile" ] && cp "$progsfile" /tmp/pre-progs.csv) || curl -Ls "$progsfile" > /tmp/pre-progs.csv
     cat /tmp/pre-progs.csv | sed '/^#/d' > /tmp/progs.csv
 	total=$(wc -l < /tmp/progs.csv)
     msg "Installing $total packages"
 	aurinstalled=$(pacman -Qqm)
-	while IFS=, read -r tag program system_service user_service; do
+	while IFS=, read -r tag program system_service user_service user_nosession_service; do
 		n=$((n+1))
 		case "$tag" in
-			"A") aurinstall "$program" "$system_service" "$user_service" ;;
+			"A") aurinstall "$program" "$system_service" "$user_service" "$user_nosession_service";;
 			"G") gitmakeinstall "$program" ;;
 			"P") pipinstall "$program" ;;
-			*) maininstall "$program" "$system_service" "$user_servuce" ;;
+			*) maininstall "$program" "$system_service" "$user_service" "$user_nosession_service";;
 		esac
-	done < /tmp/progs.csv ;}
+	done < /tmp/progs.csv ;
+}
 
 putgitrepo() { # Downloads a gitrepo $1 and places the files in $2 only overwriting conflicts
 	msg "Downloading and installing config files..."
