@@ -20,6 +20,7 @@
 ,zsh
 ,zsh-completions
 ,sudo
+,cronie,cronie
 # X Server
 ,xorg-server
 ,xorg-xinit
@@ -48,6 +49,8 @@ A,rofi-greenclip
 ,pipewire-pulse
 ,pulsemixer
 ,pamixer
+,mpd,,mpd
+,mpc
 # Bluetooth
 ,bluez
 ,bluez-libs
