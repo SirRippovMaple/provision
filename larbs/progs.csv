@@ -63,17 +63,13 @@ A,rofi-greenclip
 ,lightdm
 ,lightdm-gtk-greeter
 A,plymouth,lightdm-plymouth
+,arc-gtk-theme
+A,adwaita-dark
 # Archivers
 ,zip
 ,unzip
 ,p7zip
 ,unrar
-# Pass
-,pass
-,pass-otp
-,rofi-pass
-A,pass-update
-A,pwgen-passphrase
 # Software
 A,brave-bin
 ,kitty
@@ -93,3 +89,4 @@ A,datagrip
 ,lsof
 ,syncthing,,,syncthing
 ,texlive
+,bitwarden
