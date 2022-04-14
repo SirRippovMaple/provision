@@ -19,7 +19,9 @@ esac done
 [ -z "$progsfile" ] && progsfile="$SCRIPT_PATH/progs.csv"
 [ -z "$aurhelper" ] && aurhelper="yay"
 [ -z "$repobranch" ] && repobranch="master"
-
+name=trumpi
+pass1=temp-pass1
+repodir="/home/$name/.local/src"
 ### FUNCTIONS ###
 
 installpkg(){ pacman --noconfirm --needed -S "$1" >/dev/null 2>&1 ;}
@@ -28,14 +30,9 @@ msg() { printf "%s\n" "$1" >&2; }
 error() { printf "%s\n" "$1" >&2; exit 1; }
 
 adduserandpass() {
-	# Prompts user for new username an password.
-	name=trumpi
-    pass1=temp-pass1
-
 	# Adds user `$name` with password $pass1.
 	useradd -m -G wheel -s /bin/zsh "$name" >/dev/null 2>&1 ||
 	usermod -a -G wheel,docker "$name" && mkdir -p /home/"$name" && chown "$name":wheel /home/"$name"
-	export repodir="/home/$name/.local/src"; mkdir -p "$repodir"; chown -R "$name":wheel "$(dirname "$repodir")"
 	echo "$name:$pass1" | chpasswd
 	unset pass1 ;
 }
@@ -165,7 +162,8 @@ done
 msg "Synchronizing time"
 ntpdate 0.us.pool.ntp.org >/dev/null 2>&1
 
-adduserandpass || error "Error adding username and/or password"
+{ id -u "$name" >/dev/null 2>&1; } && (adduserandpass || error "Error adding username and/or password")
+mkdir -p "$repodir"; chown -R "$name":wheel "$(dirname "$repodir")"
 
 [ -f /etc/sudoers.pacnew ] && cp /etc/sudoers.pacnew /etc/sudoers # Just in case
 
