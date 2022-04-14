@@ -36,11 +36,11 @@
 ,xdg-user-dirs
 ,xclip
 # i3
-,i3-wm
 ,i3-gaps
 ,i3lock
 ,rofi
 A,polybar
+A,picom
 # Clipboard
 A,rofi-greenclip
 # Audio
@@ -79,6 +79,7 @@ A,brave-bin
 ,bat
 ,dotnet-sdk
 ,neovim
+P,pynvim
 ,docker,docker
 ,feh
 ,restic
@@ -93,3 +94,4 @@ A,datagrip
 ,syncthing,,,syncthing
 ,texlive
 ,bitwarden
+,ruby
