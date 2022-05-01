@@ -68,6 +68,10 @@ A,rofi-greenclip
 A,plymouth,lightdm-plymouth
 ,arc-gtk-theme
 A,adwaita-dark
+# Printing
+,cups,cups.service
+,cups-pdf
+,avahi,avahi-daemon
 # Archivers
 ,zip
 ,unzip
