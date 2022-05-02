@@ -104,6 +104,9 @@ A,datagrip
 ,ruby
 A,discord
 ,hugo
+,ripgrep
+,fd
+,nodejs
 A,signal-desktop
 A,skypeforlinux-stable-bin
 A,tagspaces-bin
