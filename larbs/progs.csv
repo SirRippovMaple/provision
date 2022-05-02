@@ -41,6 +41,7 @@
 ,rofi
 A,polybar
 A,picom
+,dunst
 # Clipboard
 A,rofi-greenclip
 # Audio
@@ -51,6 +52,7 @@ A,rofi-greenclip
 ,pamixer
 ,mpd,,mpd
 ,mpc
+,ncmpcpp
 # Bluetooth
 ,bluez
 ,bluez-libs
@@ -97,5 +99,11 @@ A,datagrip
 ,lsof
 ,syncthing,,,syncthing
 ,texlive
+,texlive-most
 ,bitwarden
 ,ruby
+A,discord
+,hugo
+A,signal-desktop
+A,skypeforlinux-stable-bin
+A,tagspaces-bin
