@@ -43,7 +43,7 @@ A,polybar
 A,picom
 ,dunst
 # Clipboard
-A,rofi-greenclip
+A,rofi-greenclip,,greenclip
 # Audio
 ,wireplumber
 ,pipewire
