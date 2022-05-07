@@ -39,9 +39,11 @@
 ,i3-gaps
 ,i3lock
 ,rofi
+,rofi-dmenu
 A,polybar
 A,picom
 ,dunst
+,dunstify
 # Clipboard
 A,rofi-greenclip,,greenclip
 # Audio
@@ -70,6 +72,11 @@ A,rofi-greenclip,,greenclip
 A,plymouth,lightdm-plymouth
 ,arc-gtk-theme
 A,adwaita-dark
+# Fonts
+,nerd-fonts-complete
+,noto-fonts-emoji
+,adobe-source-han-sans-otc-fonts
+,adobe-source-han-serif-otc-fonts
 # Printing
 ,cups,cups.service
 ,cups-pdf
@@ -110,3 +117,6 @@ A,discord
 A,signal-desktop
 A,skypeforlinux-stable-bin
 A,tagspaces-bin
+,lazygit
+,paperkey
+,yt-dlp
