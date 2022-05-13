@@ -21,6 +21,7 @@
 ,zsh-completions
 ,sudo
 ,cronie,cronie
+,yq
 # X Server
 ,xorg-server
 ,xorg-xinit
@@ -66,6 +67,7 @@ A,rofi-greenclip,,greenclip
 ,xfce4-notifyd
 ,gnome-keyring
 ,nfs-utils,home-storage.mount
+A,expressvpn
 # Bootup candy
 ,lightdm
 ,lightdm-gtk-greeter
@@ -120,3 +122,16 @@ A,tagspaces-bin
 ,lazygit
 ,paperkey
 ,yt-dlp
+,htop
+,mpv
+,newsboat
+,vlc
+,wget
+# Libreoffice
+,libreoffice-still
+,libreoffice-fresh-en-gb
+,hunspell
+,hunspell-en-us
+,hunspell-en-gb
+,hyphen
+,hyphen-en
