@@ -162,6 +162,8 @@ done
 
 msg "Synchronizing time"
 ntpdate 0.us.pool.ntp.org >/dev/null 2>&1
+enableServices "systemd-timesyncd"
+timedatectl set-ntp true
 
 { id -u "$name" >/dev/null 2>&1; } || (adduserandpass || error "Error adding username and/or password")
 mkdir -p "$repodir"; chown -R "$name":wheel "$(dirname "$repodir")"
