@@ -80,6 +80,7 @@ A,adwaita-dark
 ,adobe-source-han-sans-otc-fonts
 ,adobe-source-han-serif-otc-fonts
 # Printing
+,nss-mdns
 ,cups,cups.service
 ,cups-pdf
 ,avahi,avahi-daemon
