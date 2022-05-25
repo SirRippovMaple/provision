@@ -135,3 +135,4 @@ A,tagspaces-bin
 ,hunspell-en-gb
 ,hyphen
 ,hyphen-en
+GO,github.com/merschformann/gotz@latest

@@ -101,6 +101,11 @@ gitmakeinstall() {
     cd /tmp || return 1 ;
 }
 
+goinstall() {
+    msg "Installing \`$1\` ($n of $total) via \`go install\`."
+    go install "$1"
+}
+
 aurinstall() {
     msg "Installing \`$1\` ($n of $total) from the AUR."
     echo "$aurinstalled" | grep -q "^$1$" && return 1
@@ -127,6 +132,7 @@ installationloop() {
             "A") aurinstall "$program" "$system_service" "$user_service" "$user_nosession_service";;
             "G") gitmakeinstall "$program" ;;
             "P") pipinstall "$program" ;;
+            "GO") goinstall "$program" ;;
             *) maininstall "$program" "$system_service" "$user_service" "$user_nosession_service";;
         esac
     done < /tmp/progs.csv ;
