@@ -67,6 +67,7 @@ A,rofi-greenclip,,greenclip
 ,xfce4-notifyd
 ,gnome-keyring
 ,nfs-utils,home-storage.mount
+,inetutils
 A,expressvpn
 # Bootup candy
 ,lightdm
@@ -84,6 +85,11 @@ A,adwaita-dark
 ,cups,cups.service
 ,cups-pdf
 ,avahi,avahi-daemon
+# VMs
+,virtualbox
+,virtualbox-host-modules-arch
+,virtualbox-guest-iso
+,vagrant
 # Archivers
 ,zip
 ,unzip
@@ -136,4 +142,6 @@ A,tagspaces-bin
 ,hunspell-en-gb
 ,hyphen
 ,hyphen-en
+,gnumeric
+,httpie
 GO,github.com/merschformann/gotz@latest

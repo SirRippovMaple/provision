@@ -175,6 +175,7 @@ timedatectl set-ntp true
 mkdir -p "$repodir"; chown -R "$name":wheel "$(dirname "$repodir")"
 
 [ -f /etc/sudoers.pacnew ] && cp /etc/sudoers.pacnew /etc/sudoers # Just in case
+pacman --noconfirm --needed -Syyu >/dev/null 2>&1
 
 # Allow user to run sudo without password. Since AUR programs must be installed
 # in a fakeroot environment, this is required for all builds with AUR.
