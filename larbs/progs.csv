@@ -95,6 +95,12 @@ A,adwaita-dark
 ,unzip
 ,p7zip
 ,unrar
+# GnuPG and Yubikey
+,gnupg,,dirmngr.socket gpg-agent-ssh.socket
+,pcsclite
+,ccid
+,hopenpgp-tools
+,yubikey-personalization
 # Software
 A,brave-bin
 ,kitty
@@ -105,7 +111,6 @@ P,pynvim
 ,docker,docker
 ,feh
 ,restic
-,gnupg,,dirmngr.socket gpg-agent-ssh.socket
 ,go
 ,hledger
 A,rider
@@ -134,6 +139,8 @@ A,tagspaces-bin
 ,newsboat
 ,vlc
 ,wget
+,httpie
+GO,github.com/merschformann/gotz@latest
 # Libreoffice
 ,libreoffice-still
 ,libreoffice-fresh-en-gb
@@ -143,5 +150,3 @@ A,tagspaces-bin
 ,hyphen
 ,hyphen-en
 ,gnumeric
-,httpie
-GO,github.com/merschformann/gotz@latest
