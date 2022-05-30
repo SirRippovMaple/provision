@@ -97,10 +97,11 @@ A,adwaita-dark
 ,unrar
 # GnuPG and Yubikey
 ,gnupg,,dirmngr.socket gpg-agent-ssh.socket
-,pcsclite
+,pcsclite,pcscd
 ,ccid
 ,hopenpgp-tools
 ,yubikey-personalization
+,paperkey
 # Software
 A,brave-bin
 ,kitty
@@ -128,11 +129,11 @@ A,discord
 ,ripgrep
 ,fd
 ,nodejs
+,npm
 A,signal-desktop
 A,skypeforlinux-stable-bin
 A,tagspaces-bin
 ,lazygit
-,paperkey
 ,yt-dlp
 ,htop
 ,mpv
