@@ -151,3 +151,6 @@ GO,github.com/merschformann/gotz@latest
 ,hyphen
 ,hyphen-en
 ,gnumeric
+# Auto-mounting
+,udisks2
+,udiskie
