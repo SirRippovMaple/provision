@@ -102,21 +102,31 @@ A,adwaita-dark
 ,hopenpgp-tools
 ,yubikey-personalization
 ,paperkey
+# Go development
+,go
+A,goland
+A,goland-jre
+# .NET development
+,dotnet-sdk
+A,rider
+A,rider-jre
+# nodejs development
+,nodejs
+,npm
+# Database development
+A,datagrip
+A,datagrip-jre
+# neovim
+,neovim
+P,pynvim
 # Software
 A,brave-bin
 ,kitty
 ,bat
-,dotnet-sdk
-,neovim
-P,pynvim
 ,docker,docker
 ,feh
 ,restic
-,go
 ,hledger
-A,rider
-A,goland
-A,datagrip
 ,exa
 ,lsof
 ,syncthing,,,syncthing
@@ -128,8 +138,6 @@ A,discord
 ,hugo
 ,ripgrep
 ,fd
-,nodejs
-,npm
 A,signal-desktop
 A,skypeforlinux-stable-bin
 A,tagspaces-bin
