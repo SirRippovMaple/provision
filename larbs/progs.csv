@@ -113,6 +113,8 @@ A,rider-jre
 # nodejs development
 ,nodejs
 ,npm
+# Rust development
+S,rustup
 # Database development
 A,datagrip
 A,datagrip-jre

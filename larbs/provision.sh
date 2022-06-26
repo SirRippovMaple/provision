@@ -4,6 +4,11 @@ set +x
 ### OPTIONS AND VARIABLES ###
 SCRIPT=$(readlink -f "$0")
 SCRIPT_PATH=$(dirname "$SCRIPT")
+if [[ -t 2 ]] && [[ -z "${NO_COLOR-}" ]] && [[ "${TERM-}" != "dumb" ]]; then
+  NOFORMAT='\033[0m' RED='\033[0;31m' GREEN='\033[0;32m' ORANGE='\033[0;33m' BLUE='\033[0;34m' PURPLE='\033[0;35m' CYAN='\033[0;36m' YELLOW='\033[1;33m'
+else
+  NOFORMAT='' RED='' GREEN='' ORANGE='' BLUE='' PURPLE='' CYAN='' YELLOW=''
+fi
 source $SCRIPT_PATH/.env
 
 while getopts ":a:r:b:p:h" o; do case "${o}" in
@@ -26,12 +31,12 @@ repodir="/home/$name/.local/src"
 
 installpkg(){ pacman --noconfirm --needed -S "$1" >/dev/null 2>&1 ;}
 
-msg() { printf "%s\n" "$1" >&2; }
-error() { printf "%s\n" "$1" >&2; exit 1; }
+msg() { echo >&2 -e "$NOFORMAT${1-}"; }
+error() { echo >&2 -e "$RED${1-}"; exit 1; }
 
 adduserandpass() {
     # Adds user `$name` with password $pass1.
-    msg "Adding login $name"
+    msg "Adding login $YELLOW$name"
     useradd -m -G wheel -s /bin/zsh "$name" >/dev/null 2>&1 ||
     usermod -a -G wheel,docker "$name" && mkdir -p /home/"$name" && chown "$name":wheel /home/"$name"
     echo "$name:$pass1" | chpasswd
@@ -65,7 +70,7 @@ newperms() { # Set special sudoers settings for install (or after).
 
 installaurhelper() { # Installs $1 manually. Used only for AUR helper here.
     # Should be run after repodir is created and var is set.
-    msg "Installing \"$1\", an AUR helper..."
+    msg "Installing $YELLOW$1$NOFORMAT, an AUR helper..."
     sudo -u "$name" mkdir -p "$repodir/$1"
     sudo -u "$name" git clone --depth 1 "https://aur.archlinux.org/$1.git" "$repodir/$1" >/dev/null 2>&1 ||
         { cd "$repodir/$1" || return 1 ; sudo -u "$name" git pull --force origin master;}
@@ -84,7 +89,7 @@ enableServices() {
 }
 
 maininstall() { # Installs all needed programs from main repo.
-    msg "Installing \`$1\` ($n of $total)."
+    msg "Installing $YELLOW$1$NOFORMAT ($YELLOW$n$NOFORMAT of $YELLOW$total$NOFORMAT)."
     installpkg "$1"
     postInstall "$1"
     enableServices "$2" "$3" "$4"
@@ -93,7 +98,7 @@ maininstall() { # Installs all needed programs from main repo.
 gitmakeinstall() {
     progname="$(basename "$1" .git)"
     dir="$repodir/$progname"
-    msg "Installing \`$progname\` ($n of $total) via \`git\` and \`make\`. $(basename "$1")"
+    msg "Installing $YELLOW$progname$NOFORMAT ($YELLOW$n$NOFORMAT of $YELLOW$total$NOFORMAT) via \`git\` and \`make\`."
     sudo -u "$name" git clone --depth 1 "$1" "$dir" >/dev/null 2>&1 || { cd "$dir" || return 1 ; sudo -u "$name" git pull --force origin master;}
     cd "$dir" || exit 1
     make >/dev/null 2>&1
@@ -102,12 +107,12 @@ gitmakeinstall() {
 }
 
 goinstall() {
-    msg "Installing \`$1\` ($n of $total) via \`go install\`."
+    msg "Installing $YELLOW$1$NOFORMAT ($YELLOW$n$NOFORMAT of $YELLOW$total$NOFORMAT) via \`go install\`."
     go install "$1"
 }
 
 aurinstall() {
-    msg "Installing \`$1\` ($n of $total) from the AUR."
+    msg "Installing $YELLOW$1$NOFORMAT ($YELLOW$n$NOFORMAT of $YELLOW$total$NOFORMAT) from the AUR."
     echo "$aurinstalled" | grep -q "^$1$" && return 1
     sudo -u "$name" $aurhelper -S --noconfirm "$1" >/dev/null 2>&1 || true
     postInstall "$1"
@@ -115,9 +120,15 @@ aurinstall() {
 }
 
 pipinstall() {
-    msg "Installing the Python package \`$1\` ($n of $total)."
+    msg "Installing the Python package $YELLOW$1$NOFORMAT ($YELLOW$n$NOFORMAT of $YELLOW$total$NOFORMAT)."
     [ -x "$(command -v "pip")" ] || installpkg python-pip >/dev/null 2>&1
     yes | pip install "$1"
+}
+
+scriptinstall() {
+    msg "Running scripts $YELLOW$1.sh$NOFORMAT ($YELLOW$n$NOFORMAT of $YELLOW$total$NOFORMAT)."
+    postInstall "$1"
+    enableServices "$2" "$3" "$4"
 }
 
 installationloop() {
@@ -133,6 +144,7 @@ installationloop() {
             "G") gitmakeinstall "$program" ;;
             "P") pipinstall "$program" ;;
             "GO") goinstall "$program" ;;
+            "S") scriptinstall "$program" "$system_service" "$user_service" "$user_nosession_service";;
             *) maininstall "$program" "$system_service" "$user_service" "$user_nosession_service";;
         esac
     done < /tmp/progs.csv ;
