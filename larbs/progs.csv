@@ -78,9 +78,11 @@ A,plymouth,lightdm-plymouth
 A,adwaita-dark
 # Fonts
 ,nerd-fonts-complete
+,noto-fonts
 ,noto-fonts-emoji
 ,adobe-source-han-sans-otc-fonts
 ,adobe-source-han-serif-otc-fonts
+,ttf-roboto
 # Printing
 ,nss-mdns
 ,cups,cups.service
@@ -122,6 +124,12 @@ A,datagrip-jre
 # neovim
 ,neovim
 P,pynvim
+A,lldb
+A,lua-language-server
+,rust-analyzer
+NPM,typescript-language-server
+NPM,dockerfile-language-server-nodejs
+NPM,vscode-langservers-extracted
 # Software
 A,brave-bin
 ,kitty
@@ -152,6 +160,7 @@ A,tagspaces-bin
 ,vlc
 ,wget
 ,httpie
+A,todotxt
 GO,github.com/merschformann/gotz@latest
 # Libreoffice
 ,libreoffice-still

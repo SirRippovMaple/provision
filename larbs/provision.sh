@@ -111,6 +111,11 @@ goinstall() {
     go install "$1"
 }
 
+npminstall() {
+    msg "Installing $YELLOW$1$NOFORMAT ($YELLOW$n$NOFORMAT of $YELLOW$total$NOFORMAT) via \`npm install\`."
+    sudo -u "$name" npm install --global "$1"
+}
+
 aurinstall() {
     msg "Installing $YELLOW$1$NOFORMAT ($YELLOW$n$NOFORMAT of $YELLOW$total$NOFORMAT) from the AUR."
     echo "$aurinstalled" | grep -q "^$1$" && return 1
@@ -144,6 +149,7 @@ installationloop() {
             "G") gitmakeinstall "$program" ;;
             "P") pipinstall "$program" ;;
             "GO") goinstall "$program" ;;
+            "NPM") npminstall "$program" ;;
             "S") scriptinstall "$program" "$system_service" "$user_service" "$user_nosession_service";;
             *) maininstall "$program" "$system_service" "$user_service" "$user_nosession_service";;
         esac
@@ -173,7 +179,7 @@ systembeepoff() {
 # Refresh Arch keyrings.
 refreshkeys || error "Error automatically refreshing Arch keyring. Consider doing so manually."
 
-for x in curl ca-certificates base-devel git ntp zsh chezmoi sudo bitwarden-cli; do
+for x in curl ca-certificates base-devel git ntp zsh chezmoi npm sudo bitwarden-cli; do
     msg "Installing \`$x\` which is required to install and configure other programs."
     installpkg "$x"
 done
