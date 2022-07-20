@@ -116,6 +116,7 @@ A,rider-jre
 # nodejs development
 ,nodejs
 ,npm
+A,nvm
 # Rust development
 S,rustup
 # Database development
