@@ -1,5 +1,5 @@
 #!/bin/sh
-set +x
+#set -x
 
 ### OPTIONS AND VARIABLES ###
 SCRIPT=$(readlink -f "$0")
@@ -118,8 +118,7 @@ npminstall() {
 
 aurinstall() {
     msg "Installing $YELLOW$1$NOFORMAT ($YELLOW$n$NOFORMAT of $YELLOW$total$NOFORMAT) from the AUR."
-    echo "$aurinstalled" | grep -q "^$1$" && return 1
-    sudo -u "$name" $aurhelper -S --noconfirm "$1" >/dev/null 2>&1 || true
+    echo "$aurinstalled" | grep -q "^$1$" || sudo -u "$name" $aurhelper -S --noconfirm "$1" >/dev/null 2>&1 || true
     postInstall "$1"
     enableServices "$2" "$3" "$4"
 }

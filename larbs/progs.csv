@@ -163,6 +163,7 @@ A,tagspaces-bin
 ,httpie
 A,todotxt
 GO,github.com/merschformann/gotz@latest
+A,todotxt
 # Libreoffice
 ,libreoffice-still
 ,libreoffice-fresh-en-gb
