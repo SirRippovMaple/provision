@@ -164,6 +164,7 @@ A,tagspaces-bin
 A,todotxt
 GO,github.com/merschformann/gotz@latest
 A,todotxt
+A,dropbox,,,dropbox
 # Libreoffice
 ,libreoffice-still
 ,libreoffice-fresh-en-gb
