@@ -113,7 +113,7 @@ goinstall() {
 
 npminstall() {
     msg "Installing $YELLOW$1$NOFORMAT ($YELLOW$n$NOFORMAT of $YELLOW$total$NOFORMAT) via \`npm install\`."
-    sudo -u "$name" npm install --global "$1"
+    npm install --global "$1"
 }
 
 aurinstall() {
