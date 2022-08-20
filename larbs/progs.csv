@@ -36,6 +36,7 @@
 ,unclutter
 ,xdg-user-dirs
 ,xclip
+,xss-lock
 # i3
 ,i3-gaps
 ,i3lock
@@ -163,6 +164,7 @@ A,tagspaces-bin
 ,httpie
 A,todotxt
 GO,github.com/merschformann/gotz@latest
+GO,github.com/dvcrn/maskedemail-cli@latest
 A,todotxt
 A,dropbox,,,dropbox
 # Libreoffice

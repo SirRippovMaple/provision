@@ -108,7 +108,7 @@ gitmakeinstall() {
 
 goinstall() {
     msg "Installing $YELLOW$1$NOFORMAT ($YELLOW$n$NOFORMAT of $YELLOW$total$NOFORMAT) via \`go install\`."
-    go install "$1"
+    sudo -u "$name" go install "$1"
 }
 
 npminstall() {
