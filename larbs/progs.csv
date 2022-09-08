@@ -167,6 +167,7 @@ GO,github.com/merschformann/gotz@latest
 GO,github.com/dvcrn/maskedemail-cli@latest
 A,todotxt
 A,dropbox,,,dropbox
+A,zbar
 # Libreoffice
 ,libreoffice-still
 ,libreoffice-fresh-en-gb
