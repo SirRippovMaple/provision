@@ -132,7 +132,9 @@ A,lua-language-server
 NPM,typescript-language-server
 NPM,dockerfile-language-server-nodejs
 NPM,vscode-langservers-extracted
+NPM,bash-language-server
 # Software
+S,antibody
 A,brave-bin
 ,kitty
 ,bat
