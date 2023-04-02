@@ -44,6 +44,8 @@ S,bw
 ,xclip
 ,xss-lock
 ,dbus-broker
+,nvidia
+,maim
 # i3
 ,i3wm
 ,i3lock
