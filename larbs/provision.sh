@@ -178,7 +178,7 @@ systembeepoff() {
 # Refresh Arch keyrings.
 refreshkeys || error "Error automatically refreshing Arch keyring. Consider doing so manually."
 
-for x in curl ca-certificates base-devel git ntp zsh chezmoi npm sudo bitwarden-cli libxml2; do
+for x in curl ca-certificates base-devel git ntp zsh chezmoi npm sudo libxml2; do
     msg "Installing \`$x\` which is required to install and configure other programs."
     installpkg "$x"
 done

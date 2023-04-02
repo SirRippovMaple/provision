@@ -1,4 +1,5 @@
 # Base
+,ca-certificates
 ,base
 ,base-devel
 ,man-db
@@ -23,6 +24,10 @@
 ,sudo
 ,cronie,cronie
 ,yq
+,ntp
+S,bw
+,libxml2
+,chezmoi
 # X Server
 ,xorg-server
 ,xorg-xinit
