@@ -1,4 +1,5 @@
 # Base
+,base
 ,base-devel
 ,man-db
 ,man-pages
@@ -37,8 +38,9 @@
 ,xdg-user-dirs
 ,xclip
 ,xss-lock
+,dbus-broker
 # i3
-,i3-gaps
+,i3wm
 ,i3lock
 ,rofi
 ,rofi-dmenu
@@ -58,6 +60,7 @@ A,rofi-greenclip,,greenclip
 ,mpd,,mpd
 ,mpc
 ,ncmpcpp
+,pavucontrol
 # Bluetooth
 ,bluez
 ,bluez-libs
@@ -72,9 +75,9 @@ A,rofi-greenclip,,greenclip
 ,inetutils
 A,expressvpn
 # Bootup candy
-,lightdm
+,lightdm,lightdm
 ,lightdm-gtk-greeter
-A,plymouth,lightdm-plymouth
+A,plymouth
 ,arc-gtk-theme
 A,adwaita-dark
 # Fonts
@@ -179,6 +182,8 @@ A,zbar
 ,hyphen
 ,hyphen-en
 ,gnumeric
+# Games
+A,prismlauncher
 # Auto-mounting
 ,udisks2
 ,udiskie
