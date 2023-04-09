@@ -29,7 +29,6 @@ pass1=temp-pass1
 repodir="/home/$name/.local/src"
 ### FUNCTIONS ###
 
-installpkg(){ pacman --noconfirm --needed -S "$1" >/dev/null 2>&1 ;}
 
 msg() { echo >&2 -e "$NOFORMAT${1-}"; }
 error() { echo >&2 -e "$RED${1-}"; exit 1; }
@@ -68,6 +67,11 @@ newperms() { # Set special sudoers settings for install (or after).
     echo "$* #LARBS" >> /etc/sudoers ;
 }
 
+nonempty() {
+    file="$1"
+    return $(cat "$file" | wc -l)
+}
+
 installaurhelper() { # Installs $1 manually. Used only for AUR helper here.
     # Should be run after repodir is created and var is set.
     msg "Installing $YELLOW$1$NOFORMAT, an AUR helper..."
@@ -78,81 +82,120 @@ installaurhelper() { # Installs $1 manually. Used only for AUR helper here.
     sudo -u "$name" -D "$repodir/$1" makepkg --noconfirm -si >/dev/null 2>&1 || return 1
 }
 
-postInstall() {
-    [ -x "$SCRIPT_PATH/scripts/$1.sh" ] && "$SCRIPT_PATH/scripts/$1.sh" "$SCRIPT_PATH" "$name"
-}
+pacmaninstall() { # Installs all needed programs from main repo.
+    [ ! nonempty "$1" ] && return
 
-enableServices() {
-    [ ! -z "$1" ] && msg "Enabling system services $1" && systemctl enable $1
-    [ ! -z "$2" ] && msg "Enabling user services $2" && systemctl enable --global $2
-    [ ! -z "$3" ] && msg "Enabling single user service $3" && systemctl enable ${3}@$name
-}
+    progs_file="$1"
 
-maininstall() { # Installs all needed programs from main repo.
-    msg "Installing $YELLOW$1$NOFORMAT ($YELLOW$n$NOFORMAT of $YELLOW$total$NOFORMAT)."
-    installpkg "$1"
-    postInstall "$1"
-    enableServices "$2" "$3" "$4"
+    msg "${YELLOW}Installing pacman packages${NOFORMAT}"
+    pacman --noconfirm --needed -S $(cat "$progs_file")
 }
 
 gitmakeinstall() {
-    progname="$(basename "$1" .git)"
-    dir="$repodir/$progname"
-    msg "Installing $YELLOW$progname$NOFORMAT ($YELLOW$n$NOFORMAT of $YELLOW$total$NOFORMAT) via \`git\` and \`make\`."
-    sudo -u "$name" git clone --depth 1 "$1" "$dir" >/dev/null 2>&1 || { cd "$dir" || return 1 ; sudo -u "$name" git pull --force origin master;}
-    cd "$dir" || exit 1
-    make >/dev/null 2>&1
-    make install >/dev/null 2>&1
-    cd /tmp || return 1 ;
+    [ ! nonempty "$1" ] && return
+
+    progs_file="$1"
+
+    msg "${YELLOW}Installing git packages${NOFORMAT}"
+    while IFS=, read -r fullprogname; do
+        progname="$(basename "$fullprogname" .git)"
+        dir="$repodir/$progname"
+        msg "Installing $YELLOW$progname$NOFORMAT ($YELLOW$n$NOFORMAT of $YELLOW$total$NOFORMAT) via \`git\` and \`make\`."
+        sudo -u "$name" git clone --depth 1 "$1" "$dir" >/dev/null 2>&1 || { cd "$dir" || return 1 ; sudo -u "$name" git pull --force origin master;}
+        cd "$dir" || exit 1
+        make >/dev/null 2>&1
+        make install >/dev/null 2>&1
+        cd /tmp || return 1 ;
+    done < "$progs_file"
 }
 
 goinstall() {
-    msg "Installing $YELLOW$1$NOFORMAT ($YELLOW$n$NOFORMAT of $YELLOW$total$NOFORMAT) via \`go install\`."
-    sudo -u "$name" go install "$1"
+    [ ! nonempty "$1" ] && return
+
+    progs_file="$1"
+
+    msg "${YELLOW}Installing go packages${NOFORMAT}"
+    while IFS=, read -r progname; do
+        sudo -u "$name" go install "$progname"
+    done < "$progs_file"
 }
 
 npminstall() {
-    msg "Installing $YELLOW$1$NOFORMAT ($YELLOW$n$NOFORMAT of $YELLOW$total$NOFORMAT) via \`npm install\`."
-    npm install --global "$1"
+    [ ! nonempty "$1" ] && return
+    
+    progs_file="$1"
+
+    msg "${YELLOW}Installing npm packages${NOFORMAT}"
+    npm install --global $(cat "$progs_file")
 }
 
 aurinstall() {
-    msg "Installing $YELLOW$1$NOFORMAT ($YELLOW$n$NOFORMAT of $YELLOW$total$NOFORMAT) from the AUR."
-    echo "$aurinstalled" | grep -q "^$1$" || sudo -u "$name" $aurhelper -S --noconfirm "$1" >/dev/null 2>&1 || true
-    postInstall "$1"
-    enableServices "$2" "$3" "$4"
-}
+    [ ! nonempty "$1" ] && return
 
-pipinstall() {
-    msg "Installing the Python package $YELLOW$1$NOFORMAT ($YELLOW$n$NOFORMAT of $YELLOW$total$NOFORMAT)."
-    [ -x "$(command -v "pip")" ] || installpkg python-pip >/dev/null 2>&1
-    yes | pip install "$1"
+    progs_file="$1"
+
+    msg "${YELLOW}Installing aur packages${NOFORMAT}"
+    sudo -u "$name" $aurhelper -S --noconfirm $(cat "$progs_file")
 }
 
 scriptinstall() {
-    msg "Running scripts $YELLOW$1.sh$NOFORMAT ($YELLOW$n$NOFORMAT of $YELLOW$total$NOFORMAT)."
-    postInstall "$1"
-    enableServices "$2" "$3" "$4"
+    [ ! nonempty "$1" ] && return
+
+    progs_file="$1"
+
+    msg "${YELLOW}Running install scripts${NOFORMAT}"
+    while IFS=, read -r progname; do
+        [ -x "$SCRIPT_PATH/scripts/$progname.sh" ] && "$SCRIPT_PATH/scripts/$progname.sh" "$SCRIPT_PATH" "$name"
+    done < "$progs_file"
 }
 
 installationloop() {
     ([ -f "$progsfile" ] && cp "$progsfile" /tmp/pre-progs.csv) || curl -Ls "$progsfile" > /tmp/pre-progs.csv
     cat /tmp/pre-progs.csv | sed '/^#/d' > /tmp/progs.csv
+    pacman_progs_file=$(mktemp)
+    aur_progs_file=$(mktemp)
+    git_progs_file=$(mktemp)
+    go_progs_file=$(mktemp)
+    npm_progs_file=$(mktemp)
+    script_progs_file=$(mktemp)
+    system_services_file=$(mktemp)
+    user_services_file=$(mktemp)
+    user_nosession_service_file=$(mktemp)
+
     total=$(wc -l < /tmp/progs.csv)
     msg "Installing $total packages"
     aurinstalled=$(pacman -Qqm)
+
     while IFS=, read -r tag program system_service user_service user_nosession_service; do
+
         n=$((n+1))
         case "$tag" in
-            "A") aurinstall "$program" "$system_service" "$user_service" "$user_nosession_service";;
-            "G") gitmakeinstall "$program" ;;
-            "P") pipinstall "$program" ;;
-            "GO") goinstall "$program" ;;
-            "NPM") npminstall "$program" ;;
-            "S") scriptinstall "$program" "$system_service" "$user_service" "$user_nosession_service";;
-            *) maininstall "$program" "$system_service" "$user_service" "$user_nosession_service";;
+            "A") echo "$program" >> "$aur_progs_file" ;;
+            "G") echo "$program" >> "$git_progs_file" ;;
+            "GO") echo "$program" >> "$go_progs_file" ;;
+            "NPM") echo "$program" >> "$npm_progs_file" ;;
+            "S") ;;
+            *) echo "$program" >> "$pacman_progs_file" ;;
         esac
+
+        [ ! -z "$system_service" ] && echo "$system_service" >> "$system_services_file"
+        [ ! -z "$user_service" ] && echo "$user_service" >> "$user_services_file"
+        [ ! -z "$user_nosession_service" ] && echo "$user_nosession_service@$name" >> "$system_services_file"
+        
+        [ -x "$SCRIPT_PATH/scripts/$1.sh" ] && echo "$program" >> "$script_progs_file"
     done < /tmp/progs.csv ;
+
+    pacmaninstall "$pacman_progs_file"
+    installaurhelper yay || error "Failed to install AUR helper."
+    aurinstall "$aur_progs_file"
+    gitmakeinstall "$git_progs_file"
+    goinstall "$go_progs_file"
+    npminstall "$npm_progs_file"
+
+    scriptinstall "$script_progs_file"
+
+    systemctl enable $(cat "$system_services_file")
+    systemctl enable --global $(cat "$user_services_file")
 }
 
 putgitrepo() { # Downloads a gitrepo $1 and places the files in $2 only overwriting conflicts
@@ -178,14 +221,14 @@ systembeepoff() {
 # Refresh Arch keyrings.
 refreshkeys || error "Error automatically refreshing Arch keyring. Consider doing so manually."
 
-for x in curl ca-certificates base-devel git ntp zsh chezmoi npm sudo libxml2; do
-    msg "Installing \`$x\` which is required to install and configure other programs."
-    installpkg "$x"
-done
+#for x in curl ca-certificates base-devel git ntp zsh chezmoi npm sudo libxml2; do
+#    msg "Installing \`$x\` which is required to install and configure other programs."
+#    installpkg "$x"
+#done
 
 msg "Synchronizing time"
 ntpdate 0.us.pool.ntp.org >/dev/null 2>&1
-enableServices "systemd-timesyncd"
+systemctl enable "systemd-timesyncd"
 timedatectl set-ntp true
 
 { id -u "$name" >/dev/null 2>&1; } || (adduserandpass || error "Error adding username and/or password")
@@ -204,8 +247,6 @@ sed -i "s/^#ParallelDownloads.*$/ParallelDownloads = 5/;s/^#Color$/Color/" /etc/
 
 # Use all cores for compilation.
 sed -i "s/-j2/-j$(nproc)/;s/^#MAKEFLAGS/MAKEFLAGS/" /etc/makepkg.conf
-
-installaurhelper yay || error "Failed to install AUR helper."
 
 # The command that does all the installing. Reads the progs.csv file and
 # installs each needed program the way required. Be sure to run this only after

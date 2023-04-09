@@ -47,15 +47,14 @@ S,bw
 ,nvidia
 ,maim
 # i3
-,i3wm
+,i3-wm
 ,i3lock
 ,rofi
-,rofi-dmenu
+#,rofi-dmenu
 ,rofi-calc
 A,polybar
 A,picom
 ,dunst
-,dunstify
 # Clipboard
 A,rofi-greenclip,,greenclip
 # Audio
@@ -88,7 +87,7 @@ A,plymouth
 ,arc-gtk-theme
 A,adwaita-dark
 # Fonts
-,nerd-fonts-complete
+A,nerd-fonts-complete
 ,noto-fonts
 ,noto-fonts-emoji
 ,adobe-source-han-sans-otc-fonts
@@ -135,7 +134,7 @@ A,datagrip
 A,datagrip-jre
 # neovim
 ,neovim
-P,pynvim
+,python-pynvim
 A,lldb
 A,lua-language-server
 ,rust-analyzer
@@ -155,7 +154,6 @@ A,brave-bin
 ,exa
 ,lsof
 ,syncthing,,,syncthing
-,texlive
 ,texlive-most
 ,bitwarden
 ,ruby
@@ -182,10 +180,9 @@ A,dropbox,,,dropbox
 A,zbar
 # Libreoffice
 ,libreoffice-still
-,libreoffice-fresh-en-gb
 ,hunspell
-,hunspell-en-us
-,hunspell-en-gb
+,hunspell-en_us
+,hunspell-en_gb
 ,hyphen
 ,hyphen-en
 ,gnumeric
