@@ -1,3 +1,4 @@
 .env
 .vagrant
 *.log
+.DS_Store
