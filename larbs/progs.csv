@@ -17,6 +17,7 @@
 ,ranger
 P,pillow
 ,jq
+,csvkit
 ,fzf
 ,bash
 ,bash-completion
@@ -158,6 +159,7 @@ A,brave-bin
 ,docker-compose
 ,feh
 ,restic
+,rclone
 ,hledger
 ,exa
 ,lsof
@@ -188,6 +190,7 @@ A,dropbox,,,dropbox
 A,zbar
 ,renameutils
 ,telegram-desktop
+,irssi
 # Libreoffice
 ,libreoffice-still
 ,hunspell
