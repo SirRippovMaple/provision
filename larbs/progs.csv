@@ -127,7 +127,7 @@ A,goland
 A,goland-jre
 # .NET development
 ,dotnet-sdk
-,arpnet-runtime
+,aspnet-runtime
 A,rider
 A,rider-jre
 # nodejs development
