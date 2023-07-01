@@ -67,11 +67,6 @@ newperms() { # Set special sudoers settings for install (or after).
     echo "$* #LARBS" >> /etc/sudoers ;
 }
 
-nonempty() {
-    file="$1"
-    return $(cat "$file" | wc -l)
-}
-
 installaurhelper() { # Installs $1 manually. Used only for AUR helper here.
     # Should be run after repodir is created and var is set.
     msg "Installing $YELLOW$1$NOFORMAT, an AUR helper..."
@@ -83,7 +78,7 @@ installaurhelper() { # Installs $1 manually. Used only for AUR helper here.
 }
 
 pacmaninstall() { # Installs all needed programs from main repo.
-    [ ! nonempty "$1" ] && return
+    [ ! -s "$1" ] && return
 
     progs_file="$1"
 
@@ -92,7 +87,7 @@ pacmaninstall() { # Installs all needed programs from main repo.
 }
 
 gitmakeinstall() {
-    [ ! nonempty "$1" ] && return
+    [ ! -s "$1" ] && return
 
     progs_file="$1"
 
@@ -110,18 +105,18 @@ gitmakeinstall() {
 }
 
 goinstall() {
-    [ ! nonempty "$1" ] && return
+    [ ! -s "$1" ] && return
 
     progs_file="$1"
 
     msg "${YELLOW}Installing go packages${NOFORMAT}"
     while IFS=, read -r progname; do
-        sudo -u "$name" go install "$progname"
+        sudo --login -u "$name" go install "$progname"
     done < "$progs_file"
 }
 
 npminstall() {
-    [ ! nonempty "$1" ] && return
+    [ ! -s "$1" ] && return
     
     progs_file="$1"
 
@@ -130,7 +125,7 @@ npminstall() {
 }
 
 aurinstall() {
-    [ ! nonempty "$1" ] && return
+    [ ! -s "$1" ] && return
 
     progs_file="$1"
 
@@ -139,7 +134,7 @@ aurinstall() {
 }
 
 scriptinstall() {
-    [ ! nonempty "$1" ] && return
+    [ ! -s "$1" ] && return
 
     progs_file="$1"
 

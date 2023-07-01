@@ -15,6 +15,7 @@
 ,dateutils
 ,bc
 ,ranger
+P,pillow
 ,jq
 ,fzf
 ,bash
@@ -23,11 +24,13 @@
 ,zsh-completions
 ,sudo
 ,cronie,cronie
-,yq
+,go-yq
 ,ntp
 S,bw
 ,libxml2
 ,chezmoi
+,pass
+,zoxide
 # X Server
 ,xorg-server
 ,xorg-xinit
@@ -46,6 +49,7 @@ S,bw
 ,dbus-broker
 ,nvidia
 ,maim
+A,xclicker
 # i3
 ,i3-wm
 ,i3lock
@@ -67,6 +71,7 @@ A,rofi-greenclip,,greenclip
 ,mpc
 ,ncmpcpp
 ,pavucontrol
+,alsa-utils
 # Bluetooth
 ,bluez
 ,bluez-libs
@@ -121,6 +126,7 @@ A,goland
 A,goland-jre
 # .NET development
 ,dotnet-sdk
+,arpnet-runtime
 A,rider
 A,rider-jre
 # nodejs development
@@ -147,7 +153,9 @@ S,antibody
 A,brave-bin
 ,kitty
 ,bat
+,glow
 ,docker,docker
+,docker-compose
 ,feh
 ,restic
 ,hledger
@@ -178,6 +186,8 @@ GO,github.com/dvcrn/maskedemail-cli@latest
 A,todotxt
 A,dropbox,,,dropbox
 A,zbar
+,renameutils
+,telegram-desktop
 # Libreoffice
 ,libreoffice-still
 ,hunspell
