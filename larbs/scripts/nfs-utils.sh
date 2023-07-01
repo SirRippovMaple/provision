@@ -12,7 +12,7 @@ After=network.target
 What=192.168.0.2:/home/storage
 Where=/home/storage
 Type=nfs
-Options=_netdev,auto,bg
+Options=_netdev,auto,bg,nofail
 
 [Install]
 WantedBy=multi-user.target
