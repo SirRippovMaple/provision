@@ -55,6 +55,7 @@ A,xclicker
 ,i3-wm
 ,i3lock
 ,rofi
+S,wallpaper
 #,rofi-dmenu
 ,rofi-calc
 A,polybar
@@ -93,7 +94,7 @@ A,plymouth
 ,arc-gtk-theme
 A,adwaita-dark
 # Fonts
-A,nerd-fonts-complete
+,nerd-fonts-meta
 ,noto-fonts
 ,noto-fonts-emoji
 ,adobe-source-han-sans-otc-fonts
@@ -214,3 +215,4 @@ A,zbar
 # Auto-mounting
 ,udisks2
 ,udiskie
+,zoxide
