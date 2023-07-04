@@ -62,19 +62,14 @@ Include = /etc/pacman.d/mirrorlist-arch" >> /etc/pacman.conf
     esac ;
 }
 
-newperms() { # Set special sudoers settings for install (or after).
-    sed -i "/#LARBS/d" /etc/sudoers
-    echo "$* #LARBS" >> /etc/sudoers ;
-}
-
 installaurhelper() { # Installs $1 manually. Used only for AUR helper here.
     # Should be run after repodir is created and var is set.
     msg "Installing $YELLOW$1$NOFORMAT, an AUR helper..."
-    sudo -u "$name" mkdir -p "$repodir/$1"
-    sudo -u "$name" git clone --depth 1 "https://aur.archlinux.org/$1.git" "$repodir/$1" >/dev/null 2>&1 ||
-        { cd "$repodir/$1" || return 1 ; sudo -u "$name" git pull --force origin master;}
-    cd "$repodir/$1"
-    sudo -u "$name" -D "$repodir/$1" makepkg --noconfirm -si >/dev/null 2>&1 || return 1
+    sudo --login --user "$name" mkdir -p "$repodir/$1"
+    sudo --login --user "$name" git clone --depth 1 "https://aur.archlinux.org/$1.git" "$repodir/$1" >/dev/null 2>&1 ||
+    sudo --login --user "$name" /tmp/runindir "$repodir/$1" git pull --force origin master;
+    sudo --login --user "$name" /tmp/runindir "$repodir/$1" makepkg --noconfirm -si >/dev/null 2>&1 || return 1
+    rm /tmp/runindir
 }
 
 pacmaninstall() { # Installs all needed programs from main repo.
@@ -96,7 +91,7 @@ gitmakeinstall() {
         progname="$(basename "$fullprogname" .git)"
         dir="$repodir/$progname"
         msg "Installing $YELLOW$progname$NOFORMAT ($YELLOW$n$NOFORMAT of $YELLOW$total$NOFORMAT) via \`git\` and \`make\`."
-        sudo -u "$name" git clone --depth 1 "$1" "$dir" >/dev/null 2>&1 || { cd "$dir" || return 1 ; sudo -u "$name" git pull --force origin master;}
+        sudo --login --user "$name" git clone --depth 1 "$1" "$dir" >/dev/null 2>&1 || sudo --login --user "$name" /tmp/runindir "$dir" git pull --force origin master
         cd "$dir" || exit 1
         make >/dev/null 2>&1
         make install >/dev/null 2>&1
@@ -111,7 +106,7 @@ goinstall() {
 
     msg "${YELLOW}Installing go packages${NOFORMAT}"
     while IFS=, read -r progname; do
-        sudo --login -u "$name" go install "$progname"
+        sudo --login --user "$name" go install "$progname"
     done < "$progs_file"
 }
 
@@ -130,7 +125,7 @@ aurinstall() {
     progs_file="$1"
 
     msg "${YELLOW}Installing aur packages${NOFORMAT}"
-    sudo -u "$name" $aurhelper -S --noconfirm $(cat "$progs_file")
+    sudo --login --user "$name" $aurhelper -S --noconfirm $(cat "$progs_file")
 }
 
 scriptinstall() {
@@ -193,16 +188,6 @@ installationloop() {
     systemctl enable --global $(cat "$user_services_file")
 }
 
-putgitrepo() { # Downloads a gitrepo $1 and places the files in $2 only overwriting conflicts
-    msg "Downloading and installing config files..."
-    [ -z "$3" ] && branch="master" || branch="$repobranch"
-    dir=$(mktemp -d)
-    [ ! -d "$2" ] && mkdir -p "$2"
-    chown "$name":wheel "$dir" "$2"
-    sudo -u "$name" git clone --recursive -b "$branch" --depth 1 --recurse-submodules "$1" "$dir" >/dev/null 2>&1
-    sudo -u "$name" cp -rfT "$dir" "$2"
-    }
-
 systembeepoff() {
     msg "Getting rid of that error beep sound..."
     lsmod | grep pcspkr && rmmod pcspkr
@@ -212,6 +197,10 @@ systembeepoff() {
 ### THE ACTUAL SCRIPT ###
 
 ### The rest of the script requires no user input.
+echo 'the_dir="$1"' > /tmp/runindir
+echo 'shift' >> /tmp/runindir
+echo 'cd "$the_dir" && $*' >> /tmp/runindir
+chmod 755 /tmp/runindir
 
 # Refresh Arch keyrings.
 refreshkeys || error "Error automatically refreshing Arch keyring. Consider doing so manually."
@@ -234,7 +223,7 @@ pacman --noconfirm --needed -Syyu >/dev/null 2>&1
 
 # Allow user to run sudo without password. Since AUR programs must be installed
 # in a fakeroot environment, this is required for all builds with AUR.
-newperms "%wheel ALL=(ALL:ALL) NOPASSWD: ALL"
+echo "%wheel ALL=(ALL:ALL) NOPASSWD: ALL" > /etc/sudoers.d/nopass
 
 # Make pacman colorful, concurrent downloads and Pacman eye-candy.
 grep -q "ILoveCandy" /etc/pacman.conf || sed -i "/#VerbosePkgLists/a ILoveCandy" /etc/pacman.conf
@@ -253,8 +242,9 @@ installationloop
 systembeepoff
 
 # Make zsh the default shell for the user.
+echo 'export ZDOTDIR="$HOME/.config/zsh"' > /etc/zsh/zshenv
 chsh -s /bin/zsh "$name" >/dev/null 2>&1
-sudo -u "$name" mkdir -p "/home/$name/.cache/zsh/"
+sudo --login --user "$name" mkdir -p "/home/$name/.cache/zsh/"
 
 # Install the dotfiles
 if [ ! -d /home/$name/.config/chezmoi ]; then
@@ -266,7 +256,7 @@ if [ ! -d /home/$name/.config/chezmoi ]; then
     echo "git remote set-url origin git@github.com:$dotfilesrepo" >> /tmp/install_dotfiles.sh
     echo "bw get item 509b05ef-c805-481f-a1e5-a8bf00949167 | jq -r .notes | gpg --import"
     chmod +x /tmp/install_dotfiles.sh
-    sudo -u "$name" /tmp/install_dotfiles.sh
+    sudo --login --user "$name" /tmp/install_dotfiles.sh
     rm /tmp/install_dotfiles.sh
 fi
 
