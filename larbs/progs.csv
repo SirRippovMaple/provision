@@ -143,12 +143,22 @@ A,datagrip-jre
 ,neovim
 ,python-pynvim
 A,lldb
-A,lua-language-server
+# LSP
+,lua-language-server
 ,rust-analyzer
-NPM,typescript-language-server
-NPM,dockerfile-language-server-nodejs
-NPM,vscode-langservers-extracted
-NPM,bash-language-server
+,typescript-language-server
+A,dockerfile-language-server
+,bash-language-server
+,gopls
+A,groovy-language-server-git
+A,java-langiage-server
+,vscode-json-languageserver
+A,marksman-bin
+,python-lsp-server
+A,sql-language-server
+,texlab
+A,vimls
+,yaml-language-server
 # Software
 S,antibody
 A,brave-bin
