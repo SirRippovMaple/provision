@@ -173,7 +173,6 @@ A,brave-bin
 ,hledger
 ,exa
 ,lsof
-,syncthing,,,syncthing
 ,texlive
 ,bitwarden
 ,ruby
