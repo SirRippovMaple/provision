@@ -39,3 +39,24 @@ NPM,typescript-language-server
 NPM,dockerfile-language-server-nodejs
 NPM,vscode-langservers-extracted
 NPM,bash-language-server
+# Other
+S,antibody
+,castget
+,dhcpcd
+,docker
+,docker-compose
+,duf
+,exa
+A,filebot
+,gitolite
+,htop
+,httpie
+,jq
+,kitty
+,lftp
+,zoxide
+,vifm
+,restic
+,renameutils
+A,scanbd
+,vdirsyncer
