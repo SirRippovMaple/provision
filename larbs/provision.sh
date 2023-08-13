@@ -1,5 +1,6 @@
 #!/bin/sh
-#set -x
+set -x
+set -o errexit
 
 ### OPTIONS AND VARIABLES ###
 SCRIPT=$(readlink -f "$0")
@@ -66,9 +67,9 @@ installaurhelper() { # Installs $1 manually. Used only for AUR helper here.
     # Should be run after repodir is created and var is set.
     msg "Installing $YELLOW$1$NOFORMAT, an AUR helper..."
     sudo --login --user "$name" mkdir -p "$repodir/$1"
-    sudo --login --user "$name" git clone --depth 1 "https://aur.archlinux.org/$1.git" "$repodir/$1" >/dev/null 2>&1 ||
+    sudo --login --user "$name" git clone --depth 1 "https://aur.archlinux.org/$1.git" "$repodir/$1" 
     sudo --login --user "$name" /tmp/runindir "$repodir/$1" git pull --force origin master;
-    sudo --login --user "$name" /tmp/runindir "$repodir/$1" makepkg --noconfirm -si >/dev/null 2>&1 || return 1
+    sudo --login --user "$name" /tmp/runindir "$repodir/$1" makepkg --noconfirm -si || return 1
     rm /tmp/runindir
 }
 
@@ -122,6 +123,7 @@ npminstall() {
 aurinstall() {
     [ ! -s "$1" ] && return
 
+
     progs_file="$1"
 
     msg "${YELLOW}Installing aur packages${NOFORMAT}"
@@ -152,19 +154,14 @@ installationloop() {
     user_services_file=$(mktemp)
     user_nosession_service_file=$(mktemp)
 
-    total=$(wc -l < /tmp/progs.csv)
-    msg "Installing $total packages"
-    aurinstalled=$(pacman -Qqm)
-
     while IFS=, read -r tag program system_service user_service user_nosession_service; do
 
-        n=$((n+1))
         case "$tag" in
             "A") echo "$program" >> "$aur_progs_file" ;;
             "G") echo "$program" >> "$git_progs_file" ;;
             "GO") echo "$program" >> "$go_progs_file" ;;
             "NPM") echo "$program" >> "$npm_progs_file" ;;
-            "S") ;;
+            "S") echo "$program" >> "$script_progs_file" ;;
             *) echo "$program" >> "$pacman_progs_file" ;;
         esac
 
@@ -184,8 +181,8 @@ installationloop() {
 
     scriptinstall "$script_progs_file"
 
-    systemctl enable $(cat "$system_services_file")
-    systemctl enable --global $(cat "$user_services_file")
+    [ -s "$system_services_file" ] && systemctl enable $(cat "$system_services_file") || true
+    [ -s "$user_services_file" ] && systemctl enable --global $(cat "$user_services_file") || true
 }
 
 systembeepoff() {
@@ -210,10 +207,12 @@ refreshkeys || error "Error automatically refreshing Arch keyring. Consider doin
 #    installpkg "$x"
 #done
 
-msg "Synchronizing time"
-ntpdate 0.us.pool.ntp.org >/dev/null 2>&1
-systemctl enable "systemd-timesyncd"
-timedatectl set-ntp true
+#msg "Synchronizing time"
+#ntpdate 0.us.pool.ntp.org >/dev/null 2>&1
+#systemctl enable "systemd-timesyncd"
+#timedatectl set-ntp true
+
+pacman --noconfirm --needed -S zsh base base-devel git npm
 
 { id -u "$name" >/dev/null 2>&1; } || (adduserandpass || error "Error adding username and/or password")
 mkdir -p "$repodir"; chown -R "$name":wheel "$(dirname "$repodir")"
@@ -249,13 +248,15 @@ sudo --login --user "$name" mkdir -p "/home/$name/.cache/zsh/"
 
 # Install the dotfiles
 if [ ! -d /home/$name/.config/chezmoi ]; then
-    echo "source \"$SCRIPT_PATH/.env\"" > /tmp/install_dotfiles.sh
+    cp "$SCRIPT_PATH/.env" "/tmp/.env"
+    chown "$name" "/tmp/.env"
+    echo "source \"/tmp/.env\"" > /tmp/install_dotfiles.sh
+    echo "rm /tmp/.env" >> /tmp/install_dotfiles.sh
     echo "bw login --apikey" >> /tmp/install_dotfiles.sh
     echo "export BW_SESSION=\"\`bw unlock --raw --passwordenv BW_PASSWORD\`\"" >> /tmp/install_dotfiles.sh
     echo "chezmoi init --apply \"https://github.com/$dotfilesrepo\"" >> /tmp/install_dotfiles.sh
     echo "cd ~/.local/share/chezmoi" >> /tmp/install_dotfiles.sh
     echo "git remote set-url origin git@github.com:$dotfilesrepo" >> /tmp/install_dotfiles.sh
-    echo "bw get item 509b05ef-c805-481f-a1e5-a8bf00949167 | jq -r .notes | gpg --import"
     chmod +x /tmp/install_dotfiles.sh
     sudo --login --user "$name" /tmp/install_dotfiles.sh
     rm /tmp/install_dotfiles.sh

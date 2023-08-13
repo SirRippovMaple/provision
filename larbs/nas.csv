@@ -22,8 +22,14 @@
 ,sudo
 ,cronie,cronie
 ,yq
+S,bw
+,chezmoi
 # Networking
+,net-tools
 ,inetutils
+,nfs-utils,nfs-server
+,samba,smb
+,squid,squid
 # Archivers
 ,zip
 ,unzip
@@ -31,7 +37,7 @@
 ,unrar
 # neovim
 ,neovim
-P,pynvim
+,python-pynvim
 A,lldb
 A,lua-language-server
 ,rust-analyzer
@@ -41,22 +47,26 @@ NPM,vscode-langservers-extracted
 NPM,bash-language-server
 # Other
 S,antibody
+,bat
 ,castget
 ,dhcpcd
-,docker
+,docker,docker
 ,docker-compose
+,dstat
 ,duf
 ,exa
-A,filebot
+A,getmail
 ,gitolite
 ,htop
 ,httpie
 ,jq
 ,kitty
 ,lftp
+,lsdvd
 ,zoxide
 ,vifm
 ,restic
 ,renameutils
-A,scanbd
 ,vdirsyncer
+,wget
+,httrack

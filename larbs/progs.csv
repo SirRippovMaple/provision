@@ -15,7 +15,7 @@
 ,dateutils
 ,bc
 ,ranger
-P,pillow
+#P,pillow
 ,jq
 ,csvkit
 ,fzf

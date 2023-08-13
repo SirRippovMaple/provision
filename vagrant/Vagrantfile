@@ -12,7 +12,7 @@ Vagrant.configure("2") do |config|
 
     # Configure the vagrant provisioner
     config.vm.provision "shell" do |shell|
-        shell.inline = "/vagrant/provision.sh"
+        shell.inline = "/vagrant/provision.sh -p /vagrant/nas.csv"
     end
 
     # Customize the vm configs
