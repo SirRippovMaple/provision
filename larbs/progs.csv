@@ -15,7 +15,7 @@
 ,dateutils
 ,bc
 ,ranger
-#P,pillow
+,python-pillow
 ,jq
 ,csvkit
 ,fzf
@@ -85,7 +85,7 @@ A,rofi-greenclip,,greenclip
 ,gnome-keyring
 ,nfs-utils,home-storage.mount
 ,inetutils
-A,expressvpn
+A,expressvpn,expressvpn
 # Bootup candy
 ,lightdm,lightdm
 ,lightdm-gtk-greeter
@@ -150,7 +150,7 @@ A,lldb
 A,dockerfile-language-server
 ,bash-language-server
 ,gopls
-A,groovy-language-server-git
+#A,groovy-language-server-git
 A,java-langiage-server
 ,vscode-json-languageserver
 A,marksman-bin

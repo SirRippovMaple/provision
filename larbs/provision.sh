@@ -10,7 +10,9 @@ if [[ -t 2 ]] && [[ -z "${NO_COLOR-}" ]] && [[ "${TERM-}" != "dumb" ]]; then
 else
   NOFORMAT='' RED='' GREEN='' ORANGE='' BLUE='' PURPLE='' CYAN='' YELLOW=''
 fi
-source $SCRIPT_PATH/.env
+
+source "$SCRIPT_PATH/etc/zsh/zshenv"
+source "$SCRIPT_PATH/.env"
 
 while getopts ":a:r:b:p:h" o; do case "${o}" in
     h) printf "Optional arguments for custom use:\\n  -r: Dotfiles repository (local file or url)\\n  -p: Dependencies and programs csv (local file or url)\\n  -a: AUR helper (must have pacman-like syntax)\\n  -h: Show this message\\n" && exit 1 ;;
@@ -144,15 +146,14 @@ scriptinstall() {
 installationloop() {
     ([ -f "$progsfile" ] && cp "$progsfile" /tmp/pre-progs.csv) || curl -Ls "$progsfile" > /tmp/pre-progs.csv
     cat /tmp/pre-progs.csv | sed '/^#/d' > /tmp/progs.csv
-    pacman_progs_file=$(mktemp)
-    aur_progs_file=$(mktemp)
-    git_progs_file=$(mktemp)
-    go_progs_file=$(mktemp)
-    npm_progs_file=$(mktemp)
-    script_progs_file=$(mktemp)
-    system_services_file=$(mktemp)
-    user_services_file=$(mktemp)
-    user_nosession_service_file=$(mktemp)
+    pacman_progs_file=$(mktemp -p /tmp -t pacman.XXXX)
+    aur_progs_file=$(mktemp -p /tmp -t aur.XXXX)
+    git_progs_file=$(mktemp -p /tmp -t git.XXXX)
+    go_progs_file=$(mktemp -p /tmp -t go.XXXX)
+    npm_progs_file=$(mktemp -p /tmp -t npm.XXXX)
+    script_progs_file=$(mktemp -p /tmp -t scripts.XXXX)
+    system_services_file=$(mktemp -p /tmp -t sysservice.XXXX)
+    user_services_file=$(mktemp -p /tmp -t userservice.XXXX)
 
     while IFS=, read -r tag program system_service user_service user_nosession_service; do
 
@@ -169,7 +170,7 @@ installationloop() {
         [ ! -z "$user_service" ] && echo "$user_service" >> "$user_services_file"
         [ ! -z "$user_nosession_service" ] && echo "$user_nosession_service@$name" >> "$system_services_file"
         
-        [ -x "$SCRIPT_PATH/scripts/$1.sh" ] && echo "$program" >> "$script_progs_file"
+        [ -x "$SCRIPT_PATH/scripts/$program.sh" ] && echo "$program" >> "$script_progs_file"
     done < /tmp/progs.csv ;
 
     pacmaninstall "$pacman_progs_file"
@@ -215,7 +216,7 @@ refreshkeys || error "Error automatically refreshing Arch keyring. Consider doin
 pacman --noconfirm --needed -S zsh base base-devel git npm
 
 { id -u "$name" >/dev/null 2>&1; } || (adduserandpass || error "Error adding username and/or password")
-mkdir -p "$repodir"; chown -R "$name":wheel "$(dirname "$repodir")"
+mkdir -p "$repodir"; chown "$name":wheel "$(dirname "$repodir")";chown "$name":wheel "$repodir"
 
 [ -f /etc/sudoers.pacnew ] && cp /etc/sudoers.pacnew /etc/sudoers # Just in case
 pacman --noconfirm --needed -Syyu >/dev/null 2>&1

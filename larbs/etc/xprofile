@@ -1,0 +1,3 @@
+#!/bin/sh
+[ -f /etc/zsh/zshenv ] && source /etc/zsh/zshenv
+

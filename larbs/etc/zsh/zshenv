@@ -1,0 +1,38 @@
+export XDG_DATA_HOME="$HOME/.local/share"
+export XDG_CONFIG_HOME="$HOME/.config"
+export XDG_STATE_HOME="$HOME/.local/state"
+export XDG_CACHE_HOME="$HOME/.cache"
+
+export LC_ALL=en_US.UTF-8
+
+export ZDOTDIR="$XDG_CONFIG_HOME/zsh"
+export NODE_REPL_HISTORY="$XDG_DATA_HOME/node_repl_history"
+export NPM_CONFIG_USERCONFIG="$XDG_CONFIG_HOME/npm/npmrc"
+export CARGO_HOME="$XDG_DATA_HOME/cargo"
+export CUDA_CACHE_PATH="$XDG_CACHE_HOME"/nv
+export GOPATH="$XDG_DATA_HOME"/go
+export MPLAYER_HOME="$XDG_CONFIG_HOME"/mplayer
+export NUGET_PACKAGES="$XDG_CACHE_HOME"/NuGetPackages
+export RUSTUP_HOME="$XDG_DATA_HOME"/rustup
+export DOCKER_CONFIG="$XDG_CONFIG_HOME/docker"
+export GNUPGHOME="$XDG_DATA_HOME/gnupg"
+export WINEPREFIX="$XDG_DATA_HOME/wine"
+export W3M_DIR="$XDG_DATA_HOME/w3m"
+export VAGRANT_HOME="$XDG_DATA_HOME/vagrant"
+export TEXMFVAR="$XDG_CACHE_HOME/texlive/texmf-var"
+export INPUTRC="$XDG_CONFIG_HOME/readline/inputrc"
+export GEM_HOME="$XDG_DATA_HOME/gem"
+export GEM_SPEC_CACHE="$XDG_CACHE_HOME/gem"
+export ERRFILE="$XDF_CACHE_HOME/X11/xsession-errors"
+export STACK_ROOT="$XDG_DATA_HOME/stack"
+export BUNDLE_USER_CONFIG="$XDG_CONFIG_HOME/bundle"
+export BUNDLE_USER_CACHE="$XDG_CACHE_HOME/bundle"
+export BUNDLE_USER_PLUGIN="$XDG_DATA_HOME/bundle"
+export PASSWORD_STORE_DIR="$XDG_DATA_HOME/pass"
+export LESSHISTFILE="$XDG_STATE_HOME/less/history"
+export GRADLE_USER_HOME="$XDG_DATA_HOME/gradle"
+
+
+alias wget=wget --hsts-file="$XDG_DATA_HOME/wget-hsts"
+alias nvidia-settings=nvidia-settings --config="$XDG_CONFIG_HOME"/nvidia/settings
+alias irssi=irssi --config="$XDG_CONFIG_HOME/irssi/config" --home="$XDG_DATA_HOME/irssi"
