@@ -1,14 +1,38 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
+$script = <<-SCRIPT
+#!/bin/bash
+ROOT_DISK_DEVICE="/dev/sda"
+ROOT_DISK_DEVICE_PART="/dev/sda5"
+ROOT_FS_SIZE=`df -h / | sed -n 2p | awk '{print $2;}'`
+sudo pacman --noconfirm -S parted
+echo "The root file system (/) has a size of $ROOT_FS_SIZE"
+echo "> Increasing disk size of $ROOT_DISK_DEVICE to available maximum"
+sudo parted /dev/sda resizepart 3 100%
+sudo btrfs filesystem resize max /
+ROOT_FS_SIZE=`df -h / | sed -n 2p | awk '{print $2;}'`
+echo "The root file system (/) has a size of $ROOT_FS_SIZE"
+exit 0
+SCRIPT
+
+# Fail if the vagrant-disksize plugin is not installed
+unless Vagrant.has_plugin?("vagrant-disksize")
+  raise 'vagrant-disksize is not installed!'
+end
 
 Vagrant.configure("2") do |config|
     config.vm.network "public_network"
 
     # Pull official archlinux box
     config.vm.box = "archlinux/archlinux"
+    config.disksize.size = "50GB"
 
     # Enable synced folders to sync the playbook to the virtual machine using rsync
     config.vm.synced_folder "../larbs", "/vagrant", type: "rsync", rsync__auto: "true"
+
+    config.vm.provision "resize", type: "shell" do |shell|
+        shell.inline = $script
+    end
 
     # Configure the vagrant provisioner
     config.vm.provision "shell" do |shell|

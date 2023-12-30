@@ -33,37 +33,52 @@ S,bw
 ,pass
 ,zoxide
 ,usbutils
-# X Server
-,xorg-server
-,xorg-xinit
-,xorg-xmodmap
-,xorg-xdpyinfo
-,xorg-xev
-,xorg-sessreg
-,xorg-xwininfo
-,xautomation
-,autocutsel
-,autorandr
-,unclutter
-,xdg-user-dirs
-,xclip
-,xss-lock
-,dbus-broker
+# Wayland
+,wayland
+,xorg-xwayland
+,xorg-xlsclients
+,qt5-wayland
+,glfw-wayland
+,wl-clipboard
+,wlr-randr
 ,nvidia
-,maim
-A,magnus
-A,xclicker
-# i3
-,i3-wm
-,i3lock
-,rofi
-#,rofi-dmenu
-,rofi-calc
-A,polybar
-A,picom
-,dunst
-# Clipboard
-A,rofi-greenclip,,greenclip
+# Sway
+,sway
+,waybar
+,wofi
+A,setwall-bin
+,swaylock
+A,swaync
+## X Server
+#,xorg-server
+#,xorg-xinit
+#,xorg-xmodmap
+#,xorg-xdpyinfo
+#,xorg-xev
+#,xorg-sessreg
+#,xorg-xwininfo
+#,xautomation
+#,autocutsel
+#,autorandr
+#,unclutter
+#,xdg-user-dirs
+#,xclip
+#,xss-lock
+#,dbus-broker
+#,maim
+#,magnus
+#A,xclicker
+## i3
+#,i3-wm
+#,i3lock
+#,rofi
+##,rofi-dmenu
+#,rofi-calc
+#A,polybar
+#A,picom
+#,dunst
+## Clipboard
+#A,rofi-greenclip,,greenclip
 # Audio
 ,wireplumber
 ,pipewire
@@ -137,7 +152,6 @@ A,rider-jre
 ,nodejs
 ,npm
 A,nvm
-A,webstorm
 # Rust development
 S,rustup
 # Database development
@@ -207,11 +221,8 @@ A,zbar
 ,renameutils
 ,telegram-desktop
 ,irssi
-A,ntfysh-bin
-A,twitch-cli-bin
-,pandoc-cli
-,owncloud-client
-,kdiff3
+,ntfysh-bin
+,twitch-cli-bin
 # Libreoffice
 ,libreoffice-still
 ,hunspell
