@@ -1,0 +1,9 @@
+[Trigger]
+Operation = Remove
+Type = Package
+Target = *
+
+[Action]
+Description = Clearing cache...
+When = PostTransaction
+Exec = /etc/pacman.d/bin/removehook

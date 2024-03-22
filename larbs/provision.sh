@@ -72,7 +72,6 @@ installaurhelper() { # Installs $1 manually. Used only for AUR helper here.
     sudo --login --user "$name" git clone --depth 1 "https://aur.archlinux.org/$1.git" "$repodir/$1" 
     sudo --login --user "$name" /tmp/runindir "$repodir/$1" git pull --force origin master;
     sudo --login --user "$name" /tmp/runindir "$repodir/$1" makepkg --noconfirm -si || return 1
-    rm /tmp/runindir
 }
 
 pacmaninstall() { # Installs all needed programs from main repo.
@@ -129,7 +128,7 @@ aurinstall() {
     progs_file="$1"
 
     msg "${YELLOW}Installing aur packages${NOFORMAT}"
-    sudo --login --user "$name" $aurhelper -S --noconfirm $(cat "$progs_file")
+    sudo --login --user "$name" $aurhelper -S --needed --noconfirm $(cat "$progs_file")
 }
 
 scriptinstall() {
@@ -208,10 +207,10 @@ refreshkeys || error "Error automatically refreshing Arch keyring. Consider doin
 #    installpkg "$x"
 #done
 
-#msg "Synchronizing time"
-#ntpdate 0.us.pool.ntp.org >/dev/null 2>&1
-#systemctl enable "systemd-timesyncd"
-#timedatectl set-ntp true
+msg "Synchronizing time"
+ntpdate 0.us.pool.ntp.org >/dev/null 2>&1
+systemctl enable "systemd-timesyncd"
+timedatectl set-ntp true
 
 pacman --noconfirm --needed -S zsh base base-devel git npm
 
@@ -223,15 +222,16 @@ pacman --noconfirm --needed -Syyu >/dev/null 2>&1
 
 # Allow user to run sudo without password. Since AUR programs must be installed
 # in a fakeroot environment, this is required for all builds with AUR.
-echo "%wheel ALL=(ALL:ALL) NOPASSWD: ALL" > /etc/sudoers.d/nopass
-echo 'Defaults !admin_flag' > /etc/sudoers.d/noadminflag
+cp -rf "./etc/sudoers.d/" /etc/sudoers.d
 
 # Make pacman colorful, concurrent downloads and Pacman eye-candy.
 grep -q "ILoveCandy" /etc/pacman.conf || sed -i "/#VerbosePkgLists/a ILoveCandy" /etc/pacman.conf
 sed -i "s/^#ParallelDownloads.*$/ParallelDownloads = 5/;s/^#Color$/Color/" /etc/pacman.conf
+cp -rf ./etc/pacman.d/* /etc/pacman.d/
 
 # Use all cores for compilation.
-sed -i "s/-j2/-j$(nproc)/;s/^#MAKEFLAGS/MAKEFLAGS/" /etc/makepkg.conf
+[ -f /etc/makepkg.conf.pacnew ] && cp /etc/makepkg.conf.pacnew /etc/makepkg.conf # Just in case
+sed -i "s/-j\\d+/-j$(nproc)/;s/^#MAKEFLAGS/MAKEFLAGS/" /etc/makepkg.conf
 
 # The command that does all the installing. Reads the progs.csv file and
 # installs each needed program the way required. Be sure to run this only after
