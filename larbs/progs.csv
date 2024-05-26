@@ -166,7 +166,7 @@ A,vimls
 # Software
 S,antibody
 ,firefox
-,kitty
+,alacritty
 ,bat
 ,glow
 ,docker,docker
